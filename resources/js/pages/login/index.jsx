@@ -5,44 +5,46 @@ import { auth } from "../../api/auth"
 
 
 const Login = () => {
-    
-    const [ form, setForm  ] = useState({
+
+    const [form, setForm] = useState({
         username: "",
-        password: "" 
+        password: ""
     })
 
 
     const gantiForm = ({ target }) => {
-        const { name, value } = target 
+        const { name, value } = target
         let _form = structuredClone(form)
-        _form[name] = value 
+        _form[name] = value
 
         setForm(_form)
     }
     const submit = () => {
 
-        if(form.username == ""){
+        if (form.username == "") {
             toast.error(`Username mohon diisi.`)
-        }else if(form.password == ""){
+        } else if (form.password == "") {
             toast.error("Password mohon diisi.")
-        }else{
-           auth({
-            username: form.username,
-            password: form.password
-           }).then((res) => {
-            if(res.data.message){
-                toast.success(res.data.message)
-            }
-           }).catch((err) => {
-            
-            if(err.response?.data?.message){
-                toast.error(err.response?.data?.message)
-            }
-            
-           })
+        } else {
+            auth({
+                username: form.username,
+                password: form.password
+            }).then((res) => {
+                if (res.data.message) {
+                    toast.success(res.data.message)
+                    // save token nya 
+                    localStorage.setItem("token", res.data.token)
+                }
+            }).catch((err) => {
+
+                if (err.response?.data?.message) {
+                    toast.error(err.response?.data?.message)
+                }
+
+            })
         }
-        
-        
+
+
     }
 
 
@@ -54,7 +56,7 @@ const Login = () => {
                         <div className="w-[40%] hidden sm:block relative !bg-cover rounded-sm" style={{ background: "url('/image-login.jpeg')" }}>
                             {/* TITLE NAMA APLIKASI */}
                             <div className="absolute text-[13px] bottom-4 text-white font-medium left-4">
-                                Aplikasi Absensi Siswa & Guru 
+                                Aplikasi Absensi Siswa & Guru
                                 <div className="mt-1 font-bold text-xl">
                                     SMKN PURWOSARI
                                 </div>
@@ -65,40 +67,40 @@ const Login = () => {
                                 <div className="font-bold">SIGN IN</div>
                                 <div className="text-xs">Selamat Datang di aplikasi Absen!</div>
 
-                                  <div className="mt-3">
-                                    <Input 
+                                <div className="mt-3">
+                                    <Input
                                         title="Username"
                                         type="text"
                                         name="username"
-                                        value={ form.username }
+                                        value={form.username}
                                         onChange={gantiForm}
                                         placeholder="Masukan Username"
                                     />
-                                    <Input 
+                                    <Input
                                         title="Password"
                                         type="password"
-                                          name="password"
-                                        value={ form.password }
+                                        name="password"
+                                        value={form.password}
                                         onChange={gantiForm}
                                         placeholder="Masukan Password"
                                     />
                                 </div>
 
                                 <div>
-                                    <button 
-                                        onClick={ submit }
-                                    className="mt-5 bg-black text-white p-2 w-full font-bold rounded-md text-md shadow-md">
-                                        SIGN IN 
+                                    <button
+                                        onClick={submit}
+                                        className="mt-5 bg-black text-white p-2 w-full font-bold rounded-md text-md shadow-md">
+                                        SIGN IN
                                     </button>
                                 </div>
                             </div>
-                            
-                          
+
+
                         </div>
                     </div>
                 </div>
             </div>
-            
+
         </div>
     )
 }

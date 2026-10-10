@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
+// semua path/url akan diarahkan ke file app.blade.php
+Route::get('/{any}', function () {
     return view('app');
-});
+})->where('any', '.*');
