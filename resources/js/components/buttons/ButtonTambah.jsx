@@ -5,8 +5,8 @@ const ButtonTambah = ({
 }) => {
     return (
         <button onClick={onClick} className="flex cursor-pointer w-32 h-10 rounded-md shadow-md gap-2 justify-center items-center bg-[#506959]">
-            <Plus size={20} className="text-white stroke-3" />
-            <div className="font-medium text-white">
+            <Plus size={16} className="text-white stroke-3" />
+            <div className="font-medium text-white text-[13px]">
                 Tambah
             </div>
         </button>

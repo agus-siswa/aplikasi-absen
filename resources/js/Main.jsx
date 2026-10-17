@@ -14,13 +14,13 @@ import Kelas from "./pages/kelas"
 
 const Main = () => {
     return (
-        <div className="min-h-screen bg-[#EAE9E3]">
+        <div className="min-h-screen bg-[#EAE9E3] dark:bg-stone-800">
             {/* ℹ️ GlobalProvider digunakan untuk menyimpan state global */}
             <GlobalProvider>
                 {/* ℹ️ Navigasi digunakan untuk navigasi */}
                 <Navigasi />
                 {/* ℹ️ Toaster digunakan untuk menampilkan pesan notifikasi */}
-                <Toaster />
+                <Toaster richColors />
                 {/* ℹ️ Routes digunakan untuk routing */}
                 <Routes>
                     {/* ℹ️ Route untuk halaman login */}

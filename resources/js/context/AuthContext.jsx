@@ -16,6 +16,8 @@ const GlobalProvider = ({
     const [user, setUser] = useState(null)
     // loader digunakan untuk menyimpan state loader agar tidak terjadi blank white screen
     const [loader, setLoader] = useState(true)
+    // status dark mode pada aplikasi 
+    const [isDark, setIsDark] = useState(localStorage.getItem("dark") === "1")
     // check apakah user udah login atau belum
     const init = () => {
         // promise -> tunggu hingga dia dapat response
@@ -51,9 +53,30 @@ const GlobalProvider = ({
         }
     }, [user])
 
+    // dark mode listener
+    useEffect(() => {
+        // ambil object html -> karena dark mode hanya di html
+        const htmlSelector = document.getElementsByTagName("html")[0]
+        // jika dark mode true 
+        if (isDark) {
+            // menyimpan ke penyimpanan local
+            // agar ketika user refresh halaman, dark mode tetap ada
+            localStorage.setItem("dark", '1')
+            // menambahkan class dark pada html
+            htmlSelector.setAttribute("class", "dark")
+        } else {
+            // jika dark mode false
+            // menyimpan ke penyimpanan local
+            // agar ketika user refresh halaman, dark mode tetap ada
+            localStorage.setItem("dark", '0')
+            // menghapus class dark pada html
+            htmlSelector.removeAttribute("class")
+        }
+    }, [isDark])
+
     // ℹ️ mengembalikan GlobalConsumer.Provider dengan nilai user dan setUser
     return (
-        <GlobalConsumer.Provider value={{ user, setUser }}>
+        <GlobalConsumer.Provider value={{ user, setUser, isDark, setIsDark }}>
             {
                 // jika loader state itu true
 
