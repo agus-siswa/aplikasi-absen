@@ -149,7 +149,7 @@ const Kelas = () => {
                         { key: "aksi", title: "Aksi", className: "text-center" },
                     ]}
                     TopContent={
-                        <div>
+                        <div className="w-32 ">
                             <ButtonTambah
                                 onClick={bukaModal}
                             />

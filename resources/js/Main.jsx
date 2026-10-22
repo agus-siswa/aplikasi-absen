@@ -11,6 +11,7 @@ import Dashboard from "./pages/dashboard"
 // ℹ️ mengimport komponen Navigasi
 import Navigasi from "./components/navigasi"
 import Kelas from "./pages/kelas"
+import Siswa from "./pages/siswa"
 
 const Main = () => {
     return (
@@ -30,6 +31,7 @@ const Main = () => {
                     {/* ℹ️ Route untuk halaman dashboard */}
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/kelas" element={<Kelas />} />
+                    <Route path="/siswa" element={<Siswa />} />
                 </Routes>
             </GlobalProvider>
         </div>

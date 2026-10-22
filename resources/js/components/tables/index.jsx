@@ -23,25 +23,25 @@ const Table = ({ data, header, row, TopContent }) => {
     }, [cari, data])
     return (
         <div>
-            <div className="flex gap-2 justify-between items-center mb-2">
-                <div className="flex bg-white dark:bg-stone-700 dark:text-white rounded-lg shadow-md h-10 px-2   items-center text-[13px] gap-2">
+            <div className="md:flex w-full gap-2 justify-between items-center mb-2">
+                <div className="mb-3 md:mb-0 flex justify-center bg-white dark:bg-stone-700 dark:text-white rounded-lg shadow-md h-10 px-2   items-center text-[13px] gap-2">
                     <div className="">
                         Menampilkan
                     </div>
                     <select value={menampilkan}
                         onChange={(e) => setMenampilkan(e.target.value)}
-                        className="  p-2 text-[13px] rounded-lg">
+                        className="  p-2 text-[13px] rounded-lg dark:bg-stone-700">
                         <option value="10">10 Baris</option>
                         <option value="20">20 Baris</option>
                         <option value="50">50 Baris</option>
                         <option value="100">100 Baris</option>
                     </select>
                 </div>
-                <div className="grow">
+                <div className="grow mb-3 md:mb-0">
                     {TopContent}
                 </div>
 
-                <div className="flex items-center gap-2 bg-white dark:bg-stone-700 dark:text-white rounded-lg shadow-md ">
+                <div className="flex mb-3 md:mb-0 items-center gap-2 bg-white dark:bg-stone-700 dark:text-white rounded-lg shadow-md ">
                     <input type="text"
                         placeholder="Cari"
                         value={cari}

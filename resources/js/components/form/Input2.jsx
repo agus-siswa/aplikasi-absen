@@ -5,7 +5,9 @@ const Input2 = ({
     placeholder,
     name,
     value,
-    onChange
+    onChange,
+    onFocus,
+    onBlur
 }) => {
 
 
@@ -19,6 +21,8 @@ const Input2 = ({
                     name={name}
                     value={value}
                     onChange={onChange}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                     className="w-full border text-sm focus:outline-0 border-stone-300 p-2 h-10 dark:border-stone-600 dark:bg-stone-800/40 rounded-lg" />
 
             </div>
