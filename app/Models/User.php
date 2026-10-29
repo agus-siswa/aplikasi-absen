@@ -54,4 +54,9 @@ class User extends Authenticatable
             'users.id_kelas',
         )->join('table_kelas', 'users.id_kelas', '=', 'table_kelas.id')->get();
     }
+
+    public static function insertArraySiswa($data)
+    {
+        return DB::table('users')->insert($data);
+    }
 }

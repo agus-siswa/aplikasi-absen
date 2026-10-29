@@ -4,7 +4,7 @@ const ButtonTambah = ({
     onClick
 }) => {
     return (
-        <button onClick={onClick} className="flex cursor-pointer w-full  h-10 rounded-md shadow-md gap-2 justify-center items-center bg-[#506959]">
+        <button onClick={onClick} className="flex cursor-pointer w-full px-2 h-10 rounded-md shadow-md gap-2 justify-center items-center bg-[#506959]">
             <Plus size={16} className="text-white stroke-3" />
             <div className="font-medium text-white text-[13px]">
                 Tambah

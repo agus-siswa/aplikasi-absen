@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { getSemuaKelas } from "../../api/kelas"
 import Container from "../../components/utils/Container"
 import Modal from "../../components/modal"
@@ -9,9 +9,24 @@ import Hapus from "../../components/buttons/Hapus"
 import Edit from "../../components/buttons/Edit"
 import ModalHapus from "../../components/modal/ModalHapus"
 import Form from "./Form"
-import { editSiswa, getSemuaSiswa, hapusSiswa, tambahSiswa } from "../../api/siswa"
+import { bulkSiswa, editSiswa, getSemuaSiswa, hapusSiswa, tambahSiswa } from "../../api/siswa"
+import ButtonImport from "../../components/buttons/ButtonImport"
+import * as XLSX from "xlsx"
 
+
+const requiredHeaderExcel = [
+    "username", "password", "nama", "id_kelas"
+
+]
 const Siswa = () => {
+    const inputFile = useRef(null)
+    const [previewExcelSiswa, setPreviewExcel] = useState({
+        isOpen: false,
+        data: [],
+        jumlah_error: 0
+
+    })
+
     // menyimpan input user dari form
     // isOpen : untuk membuka tutup modal
     // form   : untuk menyimpan input user
@@ -57,6 +72,7 @@ const Siswa = () => {
     }))
     // menutup modal hapus
     const closeModalHapus = () => setHapus(prev => ({ ...prev, isOpen: false }))
+    const closeModalPreview = () => setPreviewExcel(prev => ({ ...prev, isOpen: false }))
     // membuka modal hapus
     const bukaModalHapus = (id) => setHapus(prev => ({ ...prev, isOpen: true, id }))
     const bukaModalEdit = (item) => setForm(prev => ({ ...prev, isOpen: true, id: item.id, form: { ...structuredClone(item) } }))
@@ -82,6 +98,80 @@ const Siswa = () => {
             }
 
         })
+    }
+    // import siswa 
+    const importSiswa = ({ target }) => {
+        const file = target.files[0]
+        const reader = new FileReader()
+        // overwrite function
+        reader.onload = (e) => {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const data_siswa = XLSX.utils.sheet_to_json(worksheet);
+            let jumlah_error = 0
+            const result = data_siswa.map((x) => {
+                // warnings ini untuk menyimpan validasi dari seluruh field didalam row 
+                let warnings = []
+
+                // cek satu2 apakah headernya ada
+                for (let rhe of requiredHeaderExcel) {
+                    if (x[rhe] === undefined || x[rhe] == "" || x[rhe] == null) {
+                        warnings.push(`${rhe} wajib diisi`)
+                    }
+
+                }
+
+                if (warnings.length > 0) {
+                    jumlah_error++
+                }
+                return { ...x, warnings }
+            })
+            setPreviewExcel(prev => ({
+                ...prev,
+                isOpen: true,
+                data: result,
+                jumlah_error
+            }))
+        }
+
+        reader.readAsArrayBuffer(file);
+    }
+
+    const simpanBulk = () => {
+
+        if (previewExcelSiswa.jumlah_error > 0) {
+            // jangan submit jika error excel nya ada
+            return;
+        }
+        const defaultHeader = [...requiredHeaderExcel, "nip", "no_hp"]
+        const data = structuredClone(previewExcelSiswa.data).map((x) => {
+
+            delete x.warnings
+
+            for (let dh of defaultHeader) {
+                if (x[dh] == "" || x[dh] == undefined) {
+                    x[dh] = null
+                }
+            }
+            return { ...x, role: "siswa" }
+        })
+        closeModalPreview()
+
+
+        toast.promise(bulkSiswa(data), {
+            loading: "Menyimpan Data...",
+            success: (res) => {
+                refetch()
+                return res.data.message
+            },
+            error: (err) => {
+                return err.response.data.message
+            }
+        })
+
     }
     // menyimpan data kelas ke laravel
     const simpan = () => {
@@ -182,7 +272,7 @@ const Siswa = () => {
         <Container>
 
             <div >
-
+                <input type="file" className=" hidden" onChange={importSiswa} accept=".xlsx" ref={inputFile} />
                 {/* KOmponen Tabel */}
                 <Table
                     data={data}
@@ -196,10 +286,18 @@ const Siswa = () => {
                         { key: "aksi", title: "Aksi", className: "text-center" },
                     ]}
                     TopContent={
-                        <div className="md:w-32">
-                            <ButtonTambah
-                                onClick={bukaModal}
-                            />
+                        <div className="md:w-32 flex gap-2">
+                            <div>
+                                <ButtonTambah
+                                    onClick={bukaModal}
+                                />
+                            </div>
+                            <div>
+                                <ButtonImport
+                                    onClick={() => inputFile.current?.click()}
+                                />
+                            </div>
+
                         </div>
                     }
                     row={(row, index) => {
@@ -227,7 +325,7 @@ const Siswa = () => {
                 />
             </div>
 
-            {/* 🎈 Ini adalah form modal dari kelas */}
+            {/* 🎈 Ini adalah form modal dari siswa */}
             <Modal
                 isOpen={form.isOpen}
                 close={closeModal}
@@ -242,11 +340,65 @@ const Siswa = () => {
                     />
                 </div>
             </Modal>
+            {/* 🎈 Ini adalah form modal dari hapus siswa */}
             <ModalHapus
                 isOpen={hapus.isOpen}
                 close={closeModalHapus}
                 simpan={simpanHapus}
             />
+
+
+            {/* 🎈 Ini adalah form modal dari Preview Import Siswa*/}
+            <Modal
+                isOpen={previewExcelSiswa.isOpen}
+                close={closeModalPreview}
+                title="Form Preview Import Siswa"
+                simpan={simpanBulk}
+                className=" max-w-5xl"
+            >
+                <div className="dark:text-white py-5 min-h-screen">
+
+                    <Table
+                        data={previewExcelSiswa.data}
+                        TopContent={
+                            <div>
+                                {
+                                    previewExcelSiswa.jumlah_error > 0 && (
+                                        <div className="bg-yellow-500/20 p-2 text-[13px] w-fit px-4 rounded-md">
+                                            <p className="text-yellow-700">{previewExcelSiswa.jumlah_error} Siswa Error</p>
+                                        </div>
+                                    )
+                                }
+                            </div>
+                        }
+                        header={[
+
+                            { key: "username", title: "Username", className: "text-center" },
+                            { key: "password", title: "Password", className: "text-center" },
+                            { key: "nama", title: "nama", className: "text-center" },
+                            { key: "no_hp", title: "No HP", className: "text-center" },
+                            { key: "nip", title: "No Identitas", className: "text-center" },
+                            { key: "id_kelas", title: "ID Kelas", className: "text-center" },
+                        ]}
+
+
+                        row={(row, index) => {
+
+
+                            return (
+                                <tr key={index} className={`odd:bg-stone-100 dark:odd:bg-stone-950/30 ${row.warnings.length > 0 && "!bg-amber-500/20"}`}>
+                                    <Td className="text-center">{row.username}</Td>
+                                    <Td className="text-center">{row.password}</Td>
+                                    <Td className="text-center">{row.nama}</Td>
+                                    <Td className="text-center">{row.no_hp}</Td>
+                                    <Td className="text-center">{row.nip}</Td>
+                                    <Td className="text-center">{row.id_kelas}</Td>
+                                </tr>
+                            )
+                        }}
+                    />
+                </div>
+            </Modal>
         </Container>
     )
 }

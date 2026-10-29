@@ -30,4 +30,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // menghapus data kelas
     Route::delete('/siswa/{id}', [SiswaController::class, 'deleteSiswa']);
 
+    Route::post('/siswa/bulk', [SiswaController::class, 'bulkInsert']);
 });
