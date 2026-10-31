@@ -52,7 +52,8 @@ class User extends Authenticatable
             'users.role',
             'table_kelas.nama as nama_kelas',
             'users.id_kelas',
-        )->join('table_kelas', 'users.id_kelas', '=', 'table_kelas.id')->get();
+        )->join('table_kelas', 'users.id_kelas', '=', 'table_kelas.id')
+            ->where('users.role', 'siswa')->get();
     }
 
     public static function insertArraySiswa($data)

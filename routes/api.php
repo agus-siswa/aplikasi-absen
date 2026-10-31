@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // API Login
@@ -12,23 +13,38 @@ Route::middleware('auth:sanctum')->group(function () {
     // API Mendapatkan User Yang Login
     Route::get('/currentUser', [AuthController::class, 'getCurrentUser']);
 
-    // ambil semua data kelas
-    Route::get('/kelas', [KelasController::class, 'getKelas']);
-    // menambahkan data kelas
-    Route::post('/kelas', [KelasController::class, 'addKelas']);
-    // mengedit data kelas
-    Route::put('/kelas', [KelasController::class, 'updateKelas']);
-    // menghapus data kelas
-    Route::delete('/kelas/{id}', [KelasController::class, 'deleteKelas']);
+    // yang bisa akses API ini hanya role nya superadmin
+    Route::middleware('role:superadmin')->group(function () {
+        // ambil semua data kelas
+        Route::get('/kelas', [KelasController::class, 'getKelas']);
+        // menambahkan data kelas
+        Route::post('/kelas', [KelasController::class, 'addKelas']);
+        // mengedit data kelas
+        Route::put('/kelas', [KelasController::class, 'updateKelas']);
+        // menghapus data kelas
+        Route::delete('/kelas/{id}', [KelasController::class, 'deleteKelas']);
 
-    // ambil semua data kelas
-    Route::get('/siswa', [SiswaController::class, 'getSiswa']);
-    // menambahkan data kelas
-    Route::post('/siswa', [SiswaController::class, 'addSiswa']);
-    // mengedit data kelas
-    Route::put('/siswa', [SiswaController::class, 'updateSiswa']);
-    // menghapus data kelas
-    Route::delete('/siswa/{id}', [SiswaController::class, 'deleteSiswa']);
+        // ambil semua data kelas
+        Route::get('/siswa', [SiswaController::class, 'getSiswa']);
+        // menambahkan data kelas
+        Route::post('/siswa', [SiswaController::class, 'addSiswa']);
+        // mengedit data kelas
+        Route::put('/siswa', [SiswaController::class, 'updateSiswa']);
+        // menghapus data kelas
+        Route::delete('/siswa/{id}', [SiswaController::class, 'deleteSiswa']);
+        // insert bulk
+        Route::post('/siswa/bulk', [SiswaController::class, 'bulkInsert']);
 
-    Route::post('/siswa/bulk', [SiswaController::class, 'bulkInsert']);
+        // ambil semua data kelas
+        Route::get('/user', [UserController::class, 'getUser']);
+        // menambahkan data kelas
+        Route::post('/user', [UserController::class, 'addUser']);
+        // mengedit data kelas
+        Route::put('/user', [UserController::class, 'updateUser']);
+        // menghapus data kelas
+        Route::delete('/user/{id}', [UserController::class, 'deleteUser']);
+
+    });
+
+    Route::get('/logout', [AuthController::class, 'logout']);
 });

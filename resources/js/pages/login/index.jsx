@@ -1,11 +1,13 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import Input from "../../components/form/Input"
 import { toast } from "sonner"
 import { auth } from "../../api/auth"
+import { GlobalConsumer } from "../../context/AuthContext"
 
 
 const Login = () => {
 
+    const { current } = useContext(GlobalConsumer)
     const [form, setForm] = useState({
         username: "",
         password: ""
@@ -34,6 +36,7 @@ const Login = () => {
                     toast.success(res.data.message)
                     // save token nya 
                     localStorage.setItem("token", res.data.token)
+                    current()
                 }
             }).catch((err) => {
 

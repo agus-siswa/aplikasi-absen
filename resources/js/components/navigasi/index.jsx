@@ -9,7 +9,9 @@ import LeftBar from "./LeftBar"
 const Navigasi = () => {
     const { user, isDark, setIsDark } = useContext(GlobalConsumer)
 
-
+    if (!(user?.id) || !user) {
+        return null
+    }
     return (
         <>
             <div className="h-37.5 p-10">

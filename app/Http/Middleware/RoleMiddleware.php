@@ -10,10 +10,11 @@ class RoleMiddleware
 {
     /**
      * Handle an incoming request.
+     * superadmin,admin,guru -> ["superadmin","admin","guru"]
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $roles): Response
+    public function handle(Request $request, Closure $next, $roles): Response
     {
 
         $user = $request->user();
@@ -24,12 +25,12 @@ class RoleMiddleware
             ], 401);
         }
 
-        if (! in_array($user->role, $roles, true)) {
+        if (! in_array($user->role, explode(',', $roles), true)) {
             return response()->json([
-                'message' => 'Forbidden',
+                'message' => 'Akses ditolak',
             ], 403);
         }
 
-        return redirect('/login');
+        return $next($request);
     }
 }

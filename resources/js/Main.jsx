@@ -12,6 +12,8 @@ import Dashboard from "./pages/dashboard"
 import Navigasi from "./components/navigasi"
 import Kelas from "./pages/kelas"
 import Siswa from "./pages/siswa"
+import User from "./pages/user"
+import Absen from "./pages/absen"
 
 const Main = () => {
     return (
@@ -32,6 +34,8 @@ const Main = () => {
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/kelas" element={<Kelas />} />
                     <Route path="/siswa" element={<Siswa />} />
+                    <Route path="/user" element={<User />} />
+                    <Route path="/absen" element={<Absen />} />
                 </Routes>
             </GlobalProvider>
         </div>

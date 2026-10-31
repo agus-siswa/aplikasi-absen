@@ -25,12 +25,15 @@ const GlobalProvider = ({
             // jika response status true maka user login
             if (res.data.status) {
                 setUser(res.data.data)
+            } else {
+                setUser(null)
             }
             // set loader false
             setLoader(false)
         }).catch((e) => {
             // set loader false
             setLoader(false)
+            setUser(null)
         })
     }
     // ketika document ready -> panggil function init
@@ -76,7 +79,7 @@ const GlobalProvider = ({
 
     // ℹ️ mengembalikan GlobalConsumer.Provider dengan nilai user dan setUser
     return (
-        <GlobalConsumer.Provider value={{ user, setUser, isDark, setIsDark }}>
+        <GlobalConsumer.Provider value={{ user, setUser, isDark, setIsDark, current: init }}>
             {
                 // jika loader state itu true
 

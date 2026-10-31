@@ -1,4 +1,4 @@
-import { Home, HomeIcon, LayoutGrid, Users } from "lucide-react"
+import { Home, HomeIcon, LayoutGrid, QrCode, User2, Users } from "lucide-react"
 
 const dataNavigasi = [
 
@@ -8,12 +8,20 @@ const dataNavigasi = [
     },
     {
         nama: "Siswa", url: "/siswa", icon: Users,
-        roles: ["superadmin", "siswa", "guru", "operator"]
+        roles: ["superadmin"]
     },
     {
         nama: "Kelas", url: "/kelas", icon: HomeIcon,
-        roles: ["superadmin", "siswa", "guru", "operator"]
-    }
+        roles: ["superadmin"]
+    },
+    {
+        nama: "User", url: "/user", icon: User2,
+        roles: ["superadmin"]
+    },
+    {
+        nama: "Absen", url: "/absen", icon: QrCode,
+        roles: ["guru"]
+    },
 ]
 
 
