@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsenController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\SiswaController;
@@ -10,6 +11,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('/auth', [AuthController::class, 'auth']);
 // API membatasi request yang harus login
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/absen/all', [AbsenController::class, 'allAbsen']);
+    Route::post('/absen/masuk', [AbsenController::class, 'absenMasuk']);
+    Route::post('/absen/keluar', [AbsenController::class, 'absenKeluar']);
     // API Mendapatkan User Yang Login
     Route::get('/currentUser', [AuthController::class, 'getCurrentUser']);
 

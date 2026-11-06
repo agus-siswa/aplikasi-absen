@@ -12,6 +12,8 @@ import Form from "./Form"
 import { bulkSiswa, editSiswa, getSemuaSiswa, hapusSiswa, tambahSiswa } from "../../api/siswa"
 import ButtonImport from "../../components/buttons/ButtonImport"
 import * as XLSX from "xlsx"
+import QrButton from "../../components/buttons/QrButton"
+import QRCode from "react-qr-code"
 
 
 const requiredHeaderExcel = [
@@ -34,6 +36,7 @@ const Siswa = () => {
     // id : jika ada isinya akan dianggap update
     const [form, setForm] = useState({
         isOpen: false,
+
         id: null,
         form: {
             username: "", // required
@@ -45,6 +48,11 @@ const Siswa = () => {
         }
     })
 
+    const [modalQr, setModalQr] = useState({
+        isOpen: false,
+        value: ""
+
+    })
     // modal hapus
     const [hapus, setHapus] = useState({
         isOpen: false,
@@ -76,6 +84,11 @@ const Siswa = () => {
     // membuka modal hapus
     const bukaModalHapus = (id) => setHapus(prev => ({ ...prev, isOpen: true, id }))
     const bukaModalEdit = (item) => setForm(prev => ({ ...prev, isOpen: true, id: item.id, form: { ...structuredClone(item) } }))
+
+    const closeModalQrHapus = () => setModalQr(prev => ({ ...prev, isOpen: false }))
+
+    const bukaModalQr = (id) => setModalQr(prev => ({ ...prev, isOpen: true, value: id }))
+
     // inisialisasi data kelas
     const initDataKelas = () => {
         getSemuaKelas().then((res) => {
@@ -317,6 +330,10 @@ const Siswa = () => {
                                         <Edit
                                             onClick={() => bukaModalEdit(row)}
                                         />
+
+                                        <QrButton
+                                            onClick={() => bukaModalQr(row.id)}
+                                        />
                                     </div>
                                 </Td>
                             </tr>
@@ -324,7 +341,18 @@ const Siswa = () => {
                     }}
                 />
             </div>
-
+            <Modal
+                isOpen={modalQr.isOpen}
+                close={closeModalQrHapus}
+                title="Form QR"
+                hideSimpan={true}
+            >
+                <div className="dark:text-white py-5 flex justify-center">
+                    <div className="bg-white p-2 w-fit rounded-md ">
+                        <QRCode value={modalQr.value} />
+                    </div>
+                </div>
+            </Modal>
             {/* 🎈 Ini adalah form modal dari siswa */}
             <Modal
                 isOpen={form.isOpen}
